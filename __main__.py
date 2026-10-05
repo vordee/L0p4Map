@@ -9,6 +9,7 @@ __version__ = "1.0.0"
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from core.privileges import require_admin
+from core.windows_requirements import require_windows_dependencies
 
 
 def _check_root():
@@ -87,6 +88,7 @@ def _output_table(hosts: list):
 
 def cmd_scan(args):
     _check_root()
+    _check_dependencies()
     from core.scanner import get_local_subnet, scan_network
 
     subnet = args.target
@@ -120,6 +122,7 @@ def cmd_scan(args):
 
 def cmd_gui(_args):
     _check_root()
+    _check_dependencies()
     import os
 
     from PyQt6.QtCore import QTimer
@@ -139,6 +142,14 @@ def cmd_gui(_args):
     window = MainWindow()
     QTimer.singleShot(2500, lambda: (logo.finish(window), window.show()))
     sys.exit(app.exec())
+
+
+def _check_dependencies():
+    try:
+        require_windows_dependencies()
+    except RuntimeError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        sys.exit(1)
 
 
 def build_parser() -> argparse.ArgumentParser:
