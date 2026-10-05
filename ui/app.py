@@ -797,7 +797,7 @@ class MainWindow(QMainWindow):
         self._scan_busy = False
         self._scan_preset_buttons = {}
         profiles = QHBoxLayout()
-        for name, label in (("basic", "Básico"), ("complete", "Completo")):
+        for name, label in (("basic", "Basic"), ("complete", "Complete")):
             button = QPushButton(label)
             button.setCheckable(True)
             button.setStyleSheet("QPushButton { padding: 6px 8px; } QPushButton:checked { background-color: #003c2b; }")
@@ -985,11 +985,11 @@ class MainWindow(QMainWindow):
         self._sync_scan_dependencies()
         for profile, button in self._scan_preset_buttons.items():
             button.setChecked(profile == name)
-        hint = ("100 portas TCP mais comuns, velocidade normal." if name == "basic" else
-                "Todas as 65.535 portas TCP e UDP, serviços, sistema e scripts padrão. Pode demorar bastante.")
+        hint = ("100 most common TCP ports, normal timing." if name == "basic" else
+                "All 65,535 TCP and UDP ports, service versions, OS detection, and default scripts. This can take a long time.")
         self.scan_profile_hint.setText(hint)
         for button in self._scan_preset_buttons.values():
-            button.setToolTip(hint if button.isChecked() else "Aplicar este perfil e limpar flags manuais.")
+            button.setToolTip(hint if button.isChecked() else "Apply this preset and clear custom flags.")
         self._refresh_scan_command()
 
     def _scan_options_changed(self, *_args):
@@ -998,7 +998,7 @@ class MainWindow(QMainWindow):
         self._sync_scan_dependencies()
         for button in self._scan_preset_buttons.values():
             button.setChecked(False)
-        self.scan_profile_hint.setText("Personalizado. Escolha um método TCP; UDP é opcional.")
+        self.scan_profile_hint.setText("Custom. Choose one TCP method; UDP is optional.")
         self._refresh_scan_command()
 
     def _sync_scan_dependencies(self):
@@ -1008,7 +1008,7 @@ class MainWindow(QMainWindow):
             for flag in ("-sV", "-O", "-sC"):
                 check = self._scan_checks[flag]
                 check.setEnabled(not aggressive)
-                check.setToolTip("Incluído em Aggressive (-A)." if aggressive else flag)
+                check.setToolTip("Included in Aggressive (-A)." if aggressive else flag)
                 if aggressive:
                     check.setChecked(False)
             try:
@@ -1018,7 +1018,7 @@ class MainWindow(QMainWindow):
             os_detection = aggressive or self._scan_checks["-O"].isChecked() or any(flag in custom for flag in ("-O", "-A"))
             guess = self._scan_checks["--osscan-guess"]
             guess.setEnabled(os_detection)
-            guess.setToolTip("--osscan-guess" if os_detection else "Ative OS detection ou Aggressive primeiro.")
+            guess.setToolTip("--osscan-guess" if os_detection else "Enable OS detection or Aggressive first.")
             if not os_detection:
                 guess.setChecked(False)
         finally:
@@ -1033,13 +1033,13 @@ class MainWindow(QMainWindow):
             return
         target = self.scan_target.text().strip()
         try:
-            cmd = self._scan_command(target or "<alvo>")
+            cmd = self._scan_command(target or "<target>")
             preview = "// " + subprocess.list2cmdline(cmd)
-            error = "" if target else "Informe um alvo antes de executar."
+            error = "" if target else "Enter a target before running."
             color = "#00ff99"
         except ValueError as exc:
             error = str(exc)
-            preview = "// Configuração inválida: " + error
+            preview = "// Invalid configuration: " + error
             color = "#ff6666"
         self.btn_run_scan.setEnabled(not error)
         self.btn_run_scan.setToolTip(error)
@@ -1100,7 +1100,7 @@ class MainWindow(QMainWindow):
         try:
             cmd = self._scan_command(target)
         except ValueError as exc:
-            self.scan_output.append(f"// Configuração inválida: {exc}")
+            self.scan_output.append(f"// Invalid configuration: {exc}")
             return
 
         self.scan_cmd_label.setText("// " + " ".join(cmd))

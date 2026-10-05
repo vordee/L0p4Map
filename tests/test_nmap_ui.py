@@ -4,9 +4,6 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from core.gui_runtime import configure_gui_environment
-
-configure_gui_environment()
 sys.modules["__main__"].__version__ = runpy.run_path(
     str(Path(__file__).resolve().parents[1] / "__main__.py"))["__version__"]
 

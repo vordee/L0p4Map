@@ -169,8 +169,8 @@ python L0p4Map.py
 
 ### Workflow
 
-In the Port Scan page, **Básico** selects TCP connect scanning of the 100 most
-common ports, normal timing, and open results only. **Completo** selects SYN
+In the Port Scan page, **Basic** selects TCP connect scanning of the 100 most
+common ports, normal timing, and open results only. **Complete** selects SYN
 TCP plus UDP, all 65,535 ports for both protocols, service versions, OS
 detection, default scripts, normal timing, and response reasons. Complete UDP
 scans can take a long time. Neither preset automatically starts a scan.
@@ -178,7 +178,7 @@ scans can take a long time. Neither preset automatically starts a scan.
 The TCP method, port range, and timing controls each allow one choice. UDP can
 be added to TCP. OS guess requires OS detection or Aggressive, and options
 included in Aggressive are disabled to avoid duplication. Editing an option
-switches the profile to Personalizado. Choose Default ports when specifying
+switches the profile to Custom. Choose Default ports when specifying
 ports in Custom Flags. The command preview updates as you edit; known conflicts
 in manual flags disable Run Scan and are checked again before launch. Multiple
 script selections are combined into one `--script` argument.
