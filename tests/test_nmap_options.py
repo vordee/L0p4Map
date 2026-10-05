@@ -31,14 +31,14 @@ class NmapOptionsTests(unittest.TestCase):
     def test_multiple_port_ranges_are_rejected(self):
         for selected, custom in ((["-F", "-p-"], ""), (["-F"], "-p 80,443"),
                                  (["-p-"], "--top-ports 20"), (["-F"], "--top-ports=20")):
-            with self.subTest(selected=selected, custom=custom), self.assertRaisesRegex(ValueError, "portas"):
+            with self.subTest(selected=selected, custom=custom), self.assertRaisesRegex(ValueError, "port range"):
                 build_scan_command(selected, custom, "192.0.2.10")
 
     def test_custom_ports_work_with_default_port_range(self):
         self.assertIn("80,443", build_scan_command(["", "-sT"], "-p 80,443", "192.0.2.10"))
 
     def test_multiple_timing_levels_are_rejected(self):
-        with self.assertRaisesRegex(ValueError, "velocidade"):
+        with self.assertRaisesRegex(ValueError, "timing"):
             build_scan_command(["-T3"], "-T4", "192.0.2.10")
 
     def test_multiple_script_options_are_combined(self):
@@ -49,7 +49,7 @@ class NmapOptionsTests(unittest.TestCase):
         self.assertNotIn("-sC", cmd)
 
     def test_os_guess_requires_os_detection(self):
-        with self.assertRaisesRegex(ValueError, "sistema"):
+        with self.assertRaisesRegex(ValueError, "OS detection"):
             build_scan_command(["--osscan-guess"], "", "192.0.2.10")
 
     def test_aggressive_includes_os_detection(self):
@@ -68,7 +68,7 @@ class NmapOptionsTests(unittest.TestCase):
             build_scan_command([], '--script "http-title', "192.0.2.10")
 
     def test_no_target_does_not_produce_a_command(self):
-        with self.assertRaisesRegex(ValueError, "alvo"):
+        with self.assertRaisesRegex(ValueError, "target"):
             build_scan_command([], "", "")
 
     def test_value_of_script_arguments_is_not_treated_as_a_scan_flag(self):
@@ -76,7 +76,7 @@ class NmapOptionsTests(unittest.TestCase):
         self.assertIn("--script-args", cmd)
 
     def test_value_of_script_arguments_does_not_enable_os_detection(self):
-        with self.assertRaisesRegex(ValueError, "sistema"):
+        with self.assertRaisesRegex(ValueError, "OS detection"):
             build_scan_command(["--osscan-guess"], '--script-args "-O"', "192.0.2.10")
 
     def test_attached_bounce_scan_conflicts_with_tcp(self):

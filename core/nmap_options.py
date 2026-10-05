@@ -22,14 +22,14 @@ VALUE_OPTIONS = {
 def build_scan_command(selected, custom, target):
     target = target.strip()
     if not target or target.startswith("-"):
-        raise ValueError("Informe um alvo válido antes de executar.")
+        raise ValueError("Enter a valid target before running.")
     args = []
     for flag in selected:
         args.extend(shlex.split(flag))
     try:
         args.extend(shlex.split(custom))
     except ValueError as exc:
-        raise ValueError("Revise as aspas das flags manuais.") from exc
+        raise ValueError("Check the quoting in custom flags.") from exc
 
     tcp = set()
     sctp = set()
@@ -50,13 +50,13 @@ def build_scan_command(selected, custom, target):
         if token == "--script" or token.startswith("--script="):
             if token == "--script":
                 if index >= len(args) or args[index].startswith("-"):
-                    raise ValueError("Informe o nome ou categoria após --script.")
+                    raise ValueError("Enter a script name or category after --script.")
                 value = args[index]
                 index += 1
             else:
                 value = token.partition("=")[2]
             if not value:
-                raise ValueError("Informe uma seleção de scripts válida.")
+                raise ValueError("Enter a valid script selection.")
             if value not in scripts:
                 scripts.append(value)
             continue
@@ -65,7 +65,7 @@ def build_scan_command(selected, custom, target):
             default_script_indices.add(len(cleaned) - 1)
         if token in VALUE_OPTIONS:
             if index >= len(args):
-                raise ValueError(f"Informe um valor após {token}.")
+                raise ValueError(f"Enter a value after {token}.")
             cleaned.append(args[index])
             index += 1
             continue
@@ -74,7 +74,7 @@ def build_scan_command(selected, custom, target):
         default_scripts |= token == "-A"
         if token == "-s":
             if index >= len(args):
-                raise ValueError("Informe o método após -s.")
+                raise ValueError("Enter the scan method after -s.")
             modes = args[index]
             cleaned.append(modes)
             index += 1
@@ -82,7 +82,7 @@ def build_scan_command(selected, custom, target):
             modes = "I"
             if token == "-sI":
                 if index >= len(args):
-                    raise ValueError("Informe o host do idle scan após -sI.")
+                    raise ValueError("Enter the idle scan host after -sI.")
                 cleaned.append(args[index])
                 index += 1
         else:
@@ -97,21 +97,21 @@ def build_scan_command(selected, custom, target):
             tcp.add("b")
             if token == "-b":
                 if index >= len(args):
-                    raise ValueError("Informe o servidor FTP após -b.")
+                    raise ValueError("Enter the FTP server after -b.")
                 cleaned.append(args[index])
                 index += 1
         if token == "-F" or token.startswith("-p") or token.split("=")[0] in ("--top-ports", "--port-ratio"):
             ports.append(token)
             if token in ("-p", "--top-ports", "--port-ratio"):
                 if index >= len(args) or args[index].startswith("-"):
-                    raise ValueError(f"Informe a faixa de portas após {token}.")
+                    raise ValueError(f"Enter the port range after {token}.")
                 cleaned.append(args[index])
                 index += 1
         if token.startswith("-T"):
             timing = token[2:]
             if not timing:
                 if index >= len(args):
-                    raise ValueError("Informe a velocidade após -T.")
+                    raise ValueError("Enter the timing level after -T.")
                 timing = args[index]
                 cleaned.append(timing)
                 index += 1
@@ -120,17 +120,17 @@ def build_scan_command(selected, custom, target):
             timings.add(timing)
 
     if len(tcp) > 1:
-        raise ValueError("Escolha apenas um método TCP. UDP pode ser combinado com ele.")
+        raise ValueError("Choose only one TCP method. UDP can be combined with it.")
     if len(sctp) > 1:
-        raise ValueError("Escolha apenas um método SCTP.")
+        raise ValueError("Choose only one SCTP method.")
     if non_port_scan and (tcp or sctp or ports or udp):
-        raise ValueError("Modo de descoberta/listagem/IP não pode ser combinado com varredura de portas.")
+        raise ValueError("Discovery, list, or IP protocol scanning cannot be combined with port scanning.")
     if len(ports) > 1:
-        raise ValueError("Escolha apenas uma faixa de portas: rápida, todas ou flags manuais.")
+        raise ValueError("Choose only one port range: fast, all, or custom flags.")
     if len(timings) > 1:
-        raise ValueError("Escolha apenas um nível de velocidade.")
+        raise ValueError("Choose only one timing level.")
     if os_guess and not os_detection:
-        raise ValueError("OS guess exige detecção de sistema (-O ou -A).")
+        raise ValueError("OS guess requires OS detection (-O or -A).")
     if scripts:
         if default_scripts and "default" not in scripts:
             scripts.insert(0, "default")
