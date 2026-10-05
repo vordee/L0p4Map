@@ -169,6 +169,12 @@ Use `-PythonExe 'C:\path\to\python.exe'` to select a Python installation, or
 checks these dependencies and locates Nmap in the default installation folders
 when the current shell's PATH is stale.
 
+On Windows the GUI uses Qt's automatic graphics backend selection. The app
+does not force `--disable-gpu` or `--disable-software-rasterizer`, which caused
+WebEngine graphics context failures on the tested machine. Explicit
+`QTWEBENGINE_CHROMIUM_FLAGS` settings are preserved. Graphics configuration is
+applied before importing Qt GUI modules.
+
 ---
 
 ## Usage

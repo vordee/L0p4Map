@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
 from core.privileges import require_admin
 from core.windows_requirements import require_windows_dependencies
+from core.gui_runtime import configure_gui_environment
 
 
 def _check_root():
@@ -122,18 +123,13 @@ def cmd_scan(args):
 
 def cmd_gui(_args):
     _check_root()
+    configure_gui_environment()
     _check_dependencies()
-    import os
 
     from PyQt6.QtCore import QTimer
     from PyQt6.QtWidgets import QApplication
 
     from ui.app import LogoIniziale, MainWindow
-
-    os.environ["QTWEBENGINE_CHROMIUM_FLAGS"] = (
-        "--no-sandbox --disable-gpu --disable-software-rasterizer"
-    )
-    os.environ["QTWEBENGINE_DISABLE_SANDBOX"] = "1"
 
     app = QApplication(sys.argv)
     logo = LogoIniziale()
