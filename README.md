@@ -164,7 +164,7 @@ Open a terminal (PowerShell or CMD) as Administrator, then:
 
 ```powershell
 venv\Scripts\activate
-python L0p4Map.py
+    python .\__main__.py
 ```
 
 ### Workflow

@@ -8,10 +8,14 @@ __version__ = "1.0.0"
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
 
+from core.privileges import require_admin
+
 
 def _check_root():
-    if os.getuid() != 0:
-        print("error: root privileges required (run with sudo)", file=sys.stderr)
+    try:
+        require_admin()
+    except PermissionError as exc:
+        print(f"error: {exc}", file=sys.stderr)
         sys.exit(1)
 
 
